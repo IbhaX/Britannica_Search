@@ -29,17 +29,17 @@ elif sys.platform == "win32":
 def Print(string, speed=9):
     speed = 10 if speed > 10 else 0 if speed < 0 else speed
     speed = (10-speed) * 0.005
-    
+
     for i in string:
         print(i, flush=True, end="")
         sleep(speed)
 
 def detail(url):
     """ Get detailed query content """
-    soup = BeautifulSoup(get(url).content, "lxml")
+    soup = BeautifulSoup(get(url).content, "html.parser")
     content = "n".join([i.text.strip() for i in soup.find_all("p", class_="topic-paragraph")])
     images = [i.a["href"] for i in soup.find_all("div", class_="card")]
-    
+
     data = {
         "content": content,
         "images": images if images else None
@@ -52,7 +52,7 @@ def search(query):
     """ function for searching and fetching query """
     url = f"https://www.britannica.com/search?query={'+'.join(query.split())}"
     base_url = "https://www.britannica.com"
-    soup = BeautifulSoup(get(url).content, "lxml")
+    soup = BeautifulSoup(get(url).content, "html.parser")
     response = soup.find("div", class_="search-results")
     response = {i.a.text.strip(): base_url + i.a["href"] for \
                 i in response.find_all("li")}  
